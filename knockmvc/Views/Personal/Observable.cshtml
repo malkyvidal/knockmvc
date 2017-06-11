@@ -1,0 +1,57 @@
+﻿
+@{
+    ViewBag.Title = "Observable";
+}
+
+<h2>Observable</h2>
+
+<form data-bind="submit:addChild">
+
+    New Child:
+    <input data-bind='value: newChild, valueUpdate: "afterkeydown"' />
+    <button type="submit" data-bind="enable: addChildEnabled">
+        Add
+    </button>
+    <p>Person's children:</p>
+    <select multiple="multiple" size="7" data-bind="options:
+children, selectedOptions: selectedChildren"></select><br />
+    <button data-bind="click: removeSelected, enable:
+removeSelectedEnabled">
+        Remove
+    </button>
+</form>
+
+<script src="~/Scripts/knockout-3.4.2.js"></script>
+<script>
+    //Model
+    var person = {
+        children: ["Jonnie", "Jane", "Richard", "Mary"]
+    };
+
+    var personViewModel = function () {
+        self: this;
+        self.selectedChildren = ko.observable([]);
+        self.children = ko.observableArray(person.children);
+        self.newChild = ko.observable("");
+        self.addChildEnabled = ko.computed(function () {
+            return self.newChild().length > 0;
+        });
+        self.addChild = function () {
+            if (self.addChildEnabled()) {
+                self.children.push(self.newChild());
+                self.newChild("");
+            }
+        };
+        self.removeSelectedEnabled = ko.computed(function () {
+            return self.selectedChildren().length > 0;
+        });
+        self.removeSelected = function () {
+            self.children.removeAll(self.selectedChildren());
+            self.selectedChildren([]);
+        }
+    }
+
+    ko.applyBindings(personViewModel);
+
+</script>
+

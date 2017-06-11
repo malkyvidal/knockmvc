@@ -1,0 +1,97 @@
+﻿@{
+    ViewBag.Title = "Colecciones";
+}
+
+<h1>Catalog</h1>
+
+<form class="form-horizontal" role="form" data-bind="with : newProduct">
+    <div class="form-group">
+        <div class="col-sm-12">
+            <input type="text" class="form-control" placeholder="Name"
+                   data-bind="textInput:name">
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-12">
+            <input type="password" class="form-control" placeholder="Price"
+                   data-bind="textInput:price">
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-12">
+            <input type="password" class="form-control"
+                   placeholder="Stock" data-bind="textInput:stock">
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-12">
+            <button type="submit" class="btn btn-default"
+                    data-bind="{click:$parent.addProduct}">
+                <i class="glyphicon glyphicon-plus-sign">
+                </i> Add Product
+            </button>
+        </div>
+    </div>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Stock</th>
+        </tr>
+    </thead>
+    <tbody data-bind="foreach:catalog">
+        <tr>
+            <td data-bind="text:name"></td>
+            <td data-bind="text:price"></td>
+            <td data-bind="text:stock"></td>
+        </tr>
+    </tbody>
+</table>
+
+
+<script src="~/Scripts/jquery-3.1.1.js"></script>
+<script src="~/Scripts/bootstrap.js"></script>
+<script src="~/Scripts/knockout-3.4.2.debug.js"></script>
+<script src="~/Scripts/models/product.js"></script>
+<script>
+    var vm = (function () {
+        var newProduct = Product("","","","");
+
+        var clearNewProduct = function () {
+            newProduct.name("");
+            newProduct.price("");
+            newProduct.stock("");
+        };
+        var addProduct = function (context) {
+            var id = new Date().valueOf();//random id from time
+            var newProduct = Product(
+            id,
+            context.name(),
+            context.price(),
+            context.stock()
+            );
+            catalog.push(newProduct);
+            clearNewProduct();
+           
+        };
+
+
+        var catalog =ko.observableArray( [
+            Product(1, "T-Shirt", 10.00, 20),
+            Product(2, "Trousers", 20.00, 10),
+            Product(3, "Shirt", 15.00, 20),
+            Product(4, "Shorts", 5.00, 10)
+        ]);
+        return {
+            catalog: catalog,
+            newProduct:newProduct,
+            addProduct:addProduct
+
+        };
+    })();
+    ko.applyBindings(vm);
+</script>
+

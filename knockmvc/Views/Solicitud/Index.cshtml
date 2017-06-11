@@ -1,0 +1,118 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+
+
+
+@Html.Partial("PartialDepCombo")
+
+<table class="table table-striped" >
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Fecha Desde</th>
+            <th>Fecha Hasta</th>
+        </tr>
+    </thead>
+    <tbody data-bind="foreach:viewModel.dependencias">
+
+        <tr>
+            <td data-bind="text:Nombre"></td>
+            <td data-bind="text:FechaDesde"></td>
+            <td data-bind="text:FechaHasta"></td>
+
+            
+        </tr>
+    </tbody>
+</table>
+
+
+<div>
+   
+    <span data-bind="text:solicitud.IdSolicitud"></span>
+    <span data-bind="text:solicitud.tipo"></span>
+    
+</div>
+<script src="~/Scripts/jquery-3.1.1.js"></script>
+<script src="~/Scripts/bootstrap.js"></script>
+<script src="~/Scripts/knockout-3.4.2.js"></script>
+<script>
+
+
+
+  
+
+    var ajaxManager = {
+        enviarRequest: function (accion, controller, httpMethod, succes, url, reqData) {
+            $.ajax("/" + controller + "/" + accion + (url ? "/" + url : ""), {
+
+                type: httpMethod,
+                success: succes,
+                data: reqData,
+                
+
+
+            });
+
+        }
+    };
+    var viewModel = {
+        solicitud: {
+            IdSolicitud: ko.observable(""),
+            tipo:ko.observable("")
+
+
+        },
+        optionDep: ko.observable(),
+        fechaDesde: ko.observable(),
+        fechaHAsta:ko.observable(),
+        dependencias: ko.observableArray(),
+        nuevo: function () {
+            //validar
+
+            var data = {
+
+                IdSolicitud: this.solicitud.IdSolicitud(),
+                idDependencia: this.optionDep(),
+                FechaDesde: this.fechaDesde(),
+                FechaHasta: this.fechaHAsta()
+
+            };
+            console.log(data);
+            ajaxManager.enviarRequest("NuevaDependencia", "Solicitud", "POST", function (result) {
+
+                viewModel.dependencias.push(result);
+
+            },
+
+             data
+             
+            );
+        }
+    }
+
+
+
+    function GetSolicitud(result) {
+
+       
+        viewModel.solicitud.IdSolicitud(result.IdSolicitud);
+        viewModel.solicitud.tipo(result.Tipo);
+        $.each(result.SolicitudDependencia, function (i,value) {
+
+            viewModel.dependencias.push(value);
+        })
+
+    }
+
+    $(document).ready(function () {
+
+        ko.applyBindings(viewModel);
+        ajaxManager.enviarRequest("GetAll", "Solicitud", "GET", GetSolicitud);
+        
+    });
+</script>

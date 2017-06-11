@@ -1,0 +1,37 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+My first KnockoutJS uses text binding: <span data-bind="text:
+myVariable"></span>
+<hr>
+
+My second KO uses HTML binding:
+<div data-bind="html: myHTML"></div>
+<hr>
+
+<div data-bind="css: myLeft">LEFT &nbsp;</div>
+<div data-bind="css: myRight"> &nbsp;RIGHT</div>
+My third KO uses CSS binding:
+<hr>
+
+
+<script src="~/Scripts/jquery-3.1.1.js"></script>
+<script src="~/Scripts/bootstrap.js"></script>
+<script src="~/Scripts/knockout-3.4.2.js"></script>
+<script>
+    var viewModel = {
+        myVariable: ko.observable()
+ , myHTML: ko.observable()
+ , myLeft: ko.observable()
+ , myRight: ko.observable()
+    };
+    viewModel.myVariable("Awesome simple!");
+    viewModel.myHTML("<strong>Awesome</strong> simple!");
+    viewModel.myLeft("pullLeft");
+    viewModel.myRight("pushRight");
+
+    ko.applyBindings(viewModel);
+</script>
